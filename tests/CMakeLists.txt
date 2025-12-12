@@ -1,0 +1,12 @@
+add_executable(test_local_maxima test_local_maxima.c)
+target_link_libraries(test_local_maxima PRIVATE peakdetect)
+add_test(NAME local_maxima COMMAND test_local_maxima)
+
+add_executable(test_filter_height test_filter_height.c)
+target_link_libraries(test_filter_height PRIVATE peakdetect)
+add_test(NAME filter_height COMMAND test_filter_height)
+
+add_executable(test_defrag_peaks test_defrag_peaks.c)
+target_link_libraries(test_defrag_peaks PRIVATE peakdetect)
+add_test(NAME defrag_test COMMAND test_defrag_peaks)
+
