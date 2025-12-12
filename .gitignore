@@ -1,0 +1,38 @@
+# Build artifacts
+/build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+/*.cmake
+
+# Binaries
+*.o
+*.a
+*.so
+*.out
+*.exe
+examples/peak_example
+
+# Test outputs
+tests/test_*
+
+# Editor and OS files
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Coverage and temporary files
+coverage/
+*.gcda
+*.gcno
+
+# Package manager
+/node_modules/
+
+# Misc
+.venv/
