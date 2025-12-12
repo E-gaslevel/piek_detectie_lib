@@ -14,9 +14,6 @@ compile_commands.json
 *.exe
 examples/peak_example
 
-# Test outputs
-tests/test_*
-
 # Editor and OS files
 .vscode/
 *.swp
