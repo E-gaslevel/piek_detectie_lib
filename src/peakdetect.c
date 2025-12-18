@@ -63,6 +63,10 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
+int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], size_t argsortArray_size) {
+    return 0;
+}
+
 int filter_distance(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, size_t distance) {
     return 0;
 }
