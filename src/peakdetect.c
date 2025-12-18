@@ -1,6 +1,5 @@
 #include "peakdetect.h"
 
-
 int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
     // Check if peaks array is big enough
     if (peaks_size < data_size / 2) return -1;
@@ -62,4 +61,8 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     }
 
     return defrag_peaks(peaks, peaks_size);
+}
+
+int filter_distance(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, size_t distance) {
+    return 0;
 }

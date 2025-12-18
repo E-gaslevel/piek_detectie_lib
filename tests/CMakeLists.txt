@@ -10,3 +10,6 @@ add_executable(test_defrag_peaks test_defrag_peaks.c)
 target_link_libraries(test_defrag_peaks PRIVATE peakdetect)
 add_test(NAME defrag_test COMMAND test_defrag_peaks)
 
+add_executable(test_filter_distance test_filter_distance.c)
+target_link_libraries(test_filter_distance PRIVATE peakdetect)
+add_test(NAME filter_distance COMMAND test_filter_distance)

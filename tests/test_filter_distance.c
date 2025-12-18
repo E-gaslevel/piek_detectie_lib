@@ -5,14 +5,14 @@
 
 #define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
 #define PEAKS_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices.txt"
-#define FILTERED_PEAKS_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_height_filtered.txt"
+#define DISTANCE_FILTERED_PEAKS_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_distance_filtered.txt"
 
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
 uint16_t data[MAX_DATA_POINTS];
 uint16_t peaks[MAX_PEAKS];
-uint16_t expected_height_filtered_peaks[MAX_PEAKS];
+uint16_t expected_distance_filtered_peaks[MAX_PEAKS];
 
 int main() {
     // Load reading from file into array
@@ -45,7 +45,7 @@ int main() {
     }
     fclose(exp_rptr);
 
-    filter_height(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, 4000);
+    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, 100);
 
     for (size_t i = 0; i < MAX_PEAKS; i++) {
         if (peaks[i] != 0) {
@@ -55,7 +55,7 @@ int main() {
 
     // Load filtered results from file into array
     file_index = 0;
-    FILE *fptr = fopen(FILTERED_PEAKS_FILE_PATH, "r");
+    FILE *fptr = fopen(DISTANCE_FILTERED_PEAKS_FILE_PATH, "r");
     if (fptr == NULL) {
         perror("Failed to open filtered peaks file");
         return 1;
@@ -63,13 +63,14 @@ int main() {
     char f_line[8];
     while (fgets(f_line, sizeof(f_line), fptr) != NULL) {
         if (file_index < MAX_PEAKS) {
-            expected_height_filtered_peaks[file_index++] = (uint16_t)atoi(f_line);
+            expected_distance_filtered_peaks[file_index++] = (uint16_t)atoi(f_line);
         }
     }
     fclose(fptr);
 
-    for (size_t i = 0; i < 9; i++) {
-        assert(peaks[i] == expected_height_filtered_peaks[i]);  // Verify filtered peaks
+    // Verify the filtered peaks against expected results
+    for (size_t i = 0; i < MAX_PEAKS; i++) {
+        assert(peaks[i] == expected_distance_filtered_peaks[i]);
     }
 
     return 0;
