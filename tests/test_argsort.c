@@ -4,14 +4,14 @@
 #include <stdlib.h>
 
 #define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
-#define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_argsorted.txt"
+#define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_argsort_sorted_stable.txt"
 
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
 uint16_t data[MAX_DATA_POINTS];
-uint16_t argsorted_indices[MAX_PEAKS];
-uint16_t expected_argsorted_indices[MAX_PEAKS];
+uint16_t argsorted_indices[MAX_DATA_POINTS];
+uint16_t expected_argsorted_indices[MAX_DATA_POINTS];
 
 int main() {
     // Load reading from file into array
@@ -29,9 +29,9 @@ int main() {
     }
     fclose(rptr);
 
-    argsort(data, MAX_DATA_POINTS, argsorted_indices, MAX_PEAKS);
+    argsort(data, MAX_DATA_POINTS, argsorted_indices, MAX_DATA_POINTS);
 
-    for (size_t i = 0; i < MAX_PEAKS; i++) {
+    for (size_t i = 0; i < MAX_DATA_POINTS; i++) {
         printf("index: %d, ", argsorted_indices[i] + 0);
     }
 
@@ -44,14 +44,14 @@ int main() {
     }
     char exp_line[8];
     while (fgets(exp_line, sizeof(exp_line), fptr) != NULL) {
-        if (file_index < MAX_PEAKS) {
+        if (file_index < MAX_DATA_POINTS) {
             expected_argsorted_indices[file_index++] = (uint16_t)atoi(exp_line);
         }
     }
     fclose(fptr);
 
     // Validate the argsort results
-    for (int i = 0; i < MAX_PEAKS; i++) {
+    for (int i = 0; i < MAX_DATA_POINTS; i++) {
         assert(argsorted_indices[i] == expected_argsorted_indices[i]);
     }
 

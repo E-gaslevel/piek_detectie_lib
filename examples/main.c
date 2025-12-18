@@ -3,43 +3,56 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
+#define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_argsort_sorted_stable.txt"
+
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
 uint16_t data[MAX_DATA_POINTS];
-uint16_t peaks[MAX_PEAKS];
-uint16_t expected_peak_indices[MAX_PEAKS];
+uint16_t argsorted_indices[MAX_DATA_POINTS];
+uint16_t expected_argsorted_indices[MAX_DATA_POINTS];
 
 int main() {
     // Load reading from file into array
-    FILE *rptr = fopen("tests/readings/50khz50perc1p1.txt", "r");
+    size_t file_index = 0;
+    FILE *rptr = fopen(READING_FILE_PATH, "r");
     if (rptr == NULL) {
-        perror("Failed to open file");
+        perror("Failed to open readings file");
         return 1;
     }
     char line[8];
     while (fgets(line, sizeof(line), rptr) != NULL) {
-        static int index = 0;
-        if (index < MAX_DATA_POINTS) {
-            data[index++] = (uint16_t)atoi(line);
+        if (file_index < MAX_DATA_POINTS) {
+            data[file_index++] = (uint16_t)atoi(line);
         }
     }
     fclose(rptr);
 
-    // Load peak indices from file into array
-    FILE *pkrptr = fopen("tests/readings/peaks/50khz50perc1p1_indices.txt", "r");
-    if (pkrptr == NULL) {
-        perror("Failed to open peak indices file");
+    argsort(data, MAX_DATA_POINTS, argsorted_indices, MAX_DATA_POINTS);
+
+    for (size_t i = 0; i < MAX_DATA_POINTS; i++) {
+        printf("index: %d, ", argsorted_indices[i] + 0);
+    }
+
+    // Load expected argsorted indices from file into array
+    file_index = 0;
+    FILE *fptr = fopen(ARGSORTED_INDICES_FILE_PATH, "r");
+    if (fptr == NULL) {
+        perror("Failed to open argsorted indices file");
         return 1;
     }
-    char peak_line[8];
-    while (fgets(peak_line, sizeof(peak_line), pkrptr) != NULL) {
-        static int peak_index = 0;
-        if (peak_index < MAX_PEAKS) {
-            expected_peak_indices[peak_index++] = (uint16_t)atoi(peak_line);
+    char exp_line[8];
+    while (fgets(exp_line, sizeof(exp_line), fptr) != NULL) {
+        if (file_index < MAX_DATA_POINTS) {
+            expected_argsorted_indices[file_index++] = (uint16_t)atoi(exp_line);
         }
     }
-    fclose(pkrptr);
+    fclose(fptr);
 
-    local_maxima(data, MAX_DATA_POINTS, peaks, MAX_PEAKS);
+    // print sorted array for visual inspection
+    for (int i = 0; i < MAX_DATA_POINTS; i++) {
+        //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
+        printf("index: %d\n", argsorted_indices[i] + 0);
+    }
 }
