@@ -65,15 +65,15 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
-static int cmp_idx(const void *a, const void *b)
-{
-    uint16_t i = *(const uint16_t *)a;
-    uint16_t j = *(const uint16_t *)b;
+// static int compare_values(const void *a, const void *b, )
+// {
+//     uint16_t i = *(const uint16_t *)a;
+//     uint16_t j = *(const uint16_t *)b;
 
-    if (g_data_for_qsort[i] < g_data_for_qsort[j]) return -1;
-    if (g_data_for_qsort[i] > g_data_for_qsort[j]) return 1;
-    return 0;
-}
+//     if (g_data_for_qsort[i] < g_data_for_qsort[j]) return -1;
+//     if (g_data_for_qsort[i] > g_data_for_qsort[j]) return 1;
+//     return 0;
+// }
 
 int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], size_t argsortArray_size) {
     if (data_size == 0 || argsortArray_size == 0) {
@@ -87,10 +87,26 @@ int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], si
     for (size_t i = 0; i < argsortArray_size; i++) {
         argsortArray[i] = (uint16_t)i; // initialiseer index-array
     }
+    
+    uint16_t coppied_data[data_size];
+    for (size_t i = 0; i < data_size; i++) {
+        coppied_data[i] = data[i]; // initialiseer index-array
+    }
 
-    g_data_for_qsort = data; // globale pointer voor comparator
+    for (size_t i = 0; i < data_size-1; i++) {
+        for (size_t j = 0; j < data_size-i-1; j++) {
+            if (coppied_data[j] > coppied_data[j+1]) {
+                uint16_t temp = coppied_data[j];
+                coppied_data[j] = coppied_data[j+1];
+                coppied_data[j+1] = temp;
 
-    qsort(argsortArray, argsortArray_size, sizeof(uint16_t), cmp_idx); // sorteer indices op basis van data[]
+                uint16_t temp_index = argsortArray[j];
+                argsortArray[j] = argsortArray[j+1];
+                argsortArray[j+1] = temp_index;
+            }
+        }
+    }
+
     return 0;
 }
 
