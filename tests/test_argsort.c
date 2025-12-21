@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
-#define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_argsort_sorted_stable.txt"
+#define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/indices/50khz50perc1p1_indices_argsort_sorted_stable.txt"
 
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
