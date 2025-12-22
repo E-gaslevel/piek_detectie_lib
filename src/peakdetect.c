@@ -1,5 +1,5 @@
 #include "peakdetect.h"
-
+#include <stdio.h>
 static const uint16_t *g_data_for_qsort;
 
 int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
@@ -95,7 +95,7 @@ int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], si
 
     for (size_t i = 0; i < data_size-1; i++) {
         for (size_t j = 0; j < data_size-i-1; j++) {
-            if (coppied_data[j] > coppied_data[j+1]) {
+            if (coppied_data[j] < coppied_data[j+1]) {
                 uint16_t temp = coppied_data[j];
                 coppied_data[j] = coppied_data[j+1];
                 coppied_data[j+1] = temp;
@@ -110,6 +110,41 @@ int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], si
     return 0;
 }
 
-int filter_distance(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, size_t distance) {
+int filter_distance(const uint16_t data[], size_t data_size, 
+                    uint16_t peaks[], size_t peaks_size, 
+                    uint16_t argsortArray[], size_t argsortArray_size, 
+                    size_t distance) {
+    
+    // Sorteer indices, hoog naar laag prio pieken
+    // Indices zijn gesorteed, peaks[] niet
+    argsort(peaks, peaks_size, argsortArray, argsortArray_size);
+
+    for(size_t i = argsortArray_size - 1; i > 0; i--) {
+        if(peaks[i] == 0) continue;
+        size_t peak_to_keep = peaks[argsortArray[i]];
+        printf("peak to keep: %d", peak_to_keep);
+        // Initialiseer grenzen waar de pieken verwijderd worden
+        // en check of deze niet buiten data[] vallen, zo ja, verander limiet
+        size_t limit_min, limit_max;
+        limit_min = distance;
+        limit_max = distance;
+        if(peak_to_keep - distance < 0) limit_min = peak_to_keep - 1;
+        if(peak_to_keep + distance > data_size) limit_max = data_size - peak_to_keep;
+
+        printf("\t Limit min : %d, limit max: %d\n", limit_min, limit_max);
+
+        // Remove all peaks from peaks[] within distance
+        for(size_t j = 0; j < peaks_size - 1; j++) {
+            if(peak_to_keep + limit_max == peaks[j] || peak_to_keep - limit_min == peaks[j]) {
+                peaks[j] = 0;
+            } 
+            //peaks[peak_to_keep + j];
+        }
+    }
+    defrag_peaks(peaks, peaks_size);
+    printf("New peaks are: ");
+    for (int i = 0; i < peaks_size; i++) {
+        printf("index: %d\n", peaks[i] + 0);
+    }
     return 0;
 }
