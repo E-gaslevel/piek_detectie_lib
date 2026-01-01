@@ -4,14 +4,15 @@
 #include <stdlib.h>
 
 #define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
+#define PEAKS_INDICES "../../tests/readings/indices/50khz50perc1p1_indices.txt"
 #define ARGSORTED_INDICES_FILE_PATH "../../tests/readings/indices/50khz50perc1p1_indices_argsort_sorted_stable.txt"
 
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
 uint16_t data[MAX_DATA_POINTS];
-uint16_t argsorted_indices[MAX_DATA_POINTS];
-uint16_t expected_argsorted_indices[MAX_DATA_POINTS];
+uint16_t peaks[MAX_DATA_POINTS];
+uint16_t argsorted_peak_indices[MAX_DATA_POINTS];
 
 int main() {
     // Load reading from file into array
@@ -29,30 +30,36 @@ int main() {
     }
     fclose(rptr);
 
-    argsort(data, MAX_DATA_POINTS, argsorted_indices, MAX_DATA_POINTS);
+    // for (size_t i = 0; i < MAX_DATA_POINTS; i++) {
+    //     printf("index: %d, ", argsorted_indices[i] + 0);
+    // }
 
-    for (size_t i = 0; i < MAX_DATA_POINTS; i++) {
-        printf("index: %d, ", argsorted_indices[i] + 0);
-    }
-
-    // Load expected argsorted indices from file into array
+    // Load peaks indices from file into array
     file_index = 0;
-    FILE *fptr = fopen(ARGSORTED_INDICES_FILE_PATH, "r");
+    FILE *fptr = fopen(PEAKS_INDICES, "r");
     if (fptr == NULL) {
-        perror("Failed to open argsorted indices file");
+        perror("Failed to open peaks indices file");
         return 1;
     }
     char exp_line[8];
     while (fgets(exp_line, sizeof(exp_line), fptr) != NULL) {
         if (file_index < MAX_DATA_POINTS) {
-            expected_argsorted_indices[file_index++] = (uint16_t)atoi(exp_line);
+            peaks[file_index++] = (uint16_t)atoi(exp_line);
         }
     }
     fclose(fptr);
 
     // print sorted array for visual inspection
-    for (int i = 0; i < MAX_DATA_POINTS; i++) {
-        //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
-        printf("index: %d\n", argsorted_indices[i] + 0);
-    }
+    // for (int i = 0; i < MAX_DATA_POINTS; i++) {
+    //     if (peaks[i] == 0) continue;
+    //     //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
+    //     printf("index: %d\n", peaks[i] + 0);
+    // }
+
+    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_DATA_POINTS, argsorted_peak_indices, MAX_DATA_POINTS, 100);
+    // for (int i = 0; i < MAX_DATA_POINTS; i++) {
+    //     if (argsorted_peak_indices[i] == 0) continue;
+    //     //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
+    //     printf("argsorted index: %d\n", argsorted_peak_indices[i] + 0);
+    // }
 }

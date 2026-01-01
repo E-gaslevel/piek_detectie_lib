@@ -75,34 +75,21 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
 //     return 0;
 // }
 
-int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], size_t argsortArray_size) {
-    if (data_size == 0 || argsortArray_size == 0) {
+int argsort(const uint16_t data[], uint16_t peaks[], size_t data_size, uint16_t argsortArray[]) {
+    if (data_size == 0) {
         return -1;
     }
 
-    if (argsortArray_size > data_size) {
-        argsortArray_size = data_size; // beperk argsortArray_size tot data_size
-    }
-
-    for (size_t i = 0; i < argsortArray_size; i++) {
-        argsortArray[i] = (uint16_t)i; // initialiseer index-array
-    }
-    
-    uint16_t coppied_data[data_size];
     for (size_t i = 0; i < data_size; i++) {
-        coppied_data[i] = data[i]; // initialiseer index-array
+        argsortArray[i] = i; // initialiseer index-array
     }
 
     for (size_t i = 0; i < data_size-1; i++) {
         for (size_t j = 0; j < data_size-i-1; j++) {
-            if (coppied_data[j] > coppied_data[j+1]) {
-                uint16_t temp = coppied_data[j];
-                coppied_data[j] = coppied_data[j+1];
-                coppied_data[j+1] = temp;
-
-                uint16_t temp_index = argsortArray[j];
+            if (data[peaks[argsortArray[j]]] < data[peaks[argsortArray[j+1]]]) {
+                size_t tmp = argsortArray[j];
                 argsortArray[j] = argsortArray[j+1];
-                argsortArray[j+1] = temp_index;
+                argsortArray[j+1] = tmp;
             }
         }
     }
@@ -116,37 +103,23 @@ int filter_distance(const uint16_t data[], size_t data_size,
                     size_t distance) {
     
     // Sorteer indices, hoog naar laag prio pieken
-    // Indices zijn gesorteed, peaks[] niet
-    argsort(peaks, peaks_size, argsortArray, argsortArray_size);
+    // argsortArray bevat nu indices van de pieken array
+    argsort(data, peaks, data_size, argsortArray);
 
-    // Array waar status wordt bijgehouden, 1 blijft, 0 wordt later verwijderd
-    size_t keep[data_size];
-    for(size_t i = 0; i < data_size - 1; i++) {
-        keep[i] = 1;
-    }
-    size_t keep_point = 1;
-    for(size_t i = 0; i < argsortArray_size -1; i++) {
-        // Check of de limieten binnen array vallen, zo ja, beperk limiet
-        size_t limit_min, limit_max;
-        limit_min = distance;
-        limit_max = distance;
-        if(i - distance < 0) limit_min = 0;
-        if(i + distance > data_size) limit_max = data_size;
-        
+    // Loop over de gesoorterde indices, hoog van laag.
+    // for(size_t i = 0; i < argsortArray_size; i++) {
+    //     printf("Signal value: %d, index %d\n", peaks[argsortArray[i]], i);
+    // }
 
+for (size_t i = 0; i < argsortArray_size; i++) {
+    size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
+    uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
+    printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
+}
 
-
-    }
-
-
-
-
-
-
-
-
-    // for(size_t i = argsortArray_size - 1; i > 0; i--) {
-    //     if(peaks[i] == 0) continue;
+    // argsortArray[i] geeft indices van peaks[] van laag naar hoog prio
+    // peaks[argsortArray[i]] geeft indices waar de pieken zich bevinden in data[], van laag naar hoog prio
+    //     size_t current_peak = peaks[argsortArray[i]]
     //     size_t peak_to_keep = peaks[argsortArray[i]];
     //     printf("peak to keep: %d", peak_to_keep);
     //     // Initialiseer grenzen waar de pieken verwijderd worden

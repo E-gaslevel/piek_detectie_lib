@@ -29,7 +29,7 @@ int main() {
     }
     fclose(rptr);
 
-    argsort(data, MAX_DATA_POINTS, argsorted_indices, MAX_DATA_POINTS);
+    //argsort(data, MAX_DATA_POINTS, argsorted_indices);
 
     for (size_t i = 0; i < MAX_DATA_POINTS; i++) {
         printf("index: %d, ", argsorted_indices[i] + 0);
