@@ -18,4 +18,6 @@ int filter_distance(const uint16_t data[], size_t data_size,
                     uint16_t argsortArray[], size_t argsortArray_size, 
                     size_t distance);
 
+int sum_samples(uint32_t sum[], size_t sum_size, uint16_t current_sample[], size_t current_sample_size);
+
 #endif

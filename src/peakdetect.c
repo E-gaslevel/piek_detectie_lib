@@ -111,11 +111,11 @@ int filter_distance(const uint16_t data[], size_t data_size,
     //     printf("Signal value: %d, index %d\n", peaks[argsortArray[i]], i);
     // }
 
-for (size_t i = 0; i < argsortArray_size; i++) {
-    size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
-    uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
-    printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
-}
+    for (size_t i = 0; i < argsortArray_size; i++) {
+        size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
+        uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
+        printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
+    }
 
     // argsortArray[i] geeft indices van peaks[] van laag naar hoog prio
     // peaks[argsortArray[i]] geeft indices waar de pieken zich bevinden in data[], van laag naar hoog prio
@@ -145,5 +145,17 @@ for (size_t i = 0; i < argsortArray_size; i++) {
     // for (int i = 0; i < peaks_size; i++) {
     //     printf("index: %d\n", peaks[i] + 0);
     // }
+    return 0;
+}
+
+int sum_samples(uint32_t sum[], size_t sum_size, uint16_t current_sample[], size_t current_sample_size) {
+    if (current_sample_size > sum_size) {
+        current_sample_size = sum_size;
+    }
+
+    for(size_t i = 0; i < sum_size; i++) {
+        sum[i] += current_sample[i];
+    }
+    
     return 0;
 }

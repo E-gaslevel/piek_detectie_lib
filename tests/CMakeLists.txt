@@ -17,3 +17,7 @@ add_test(NAME argsort COMMAND test_argsort)
 add_executable(test_filter_distance test_filter_distance.c)
 target_link_libraries(test_filter_distance PRIVATE peakdetect)
 add_test(NAME filter_distance COMMAND test_filter_distance)
+
+add_executable(test_sum_samples test_sum_samples.c)
+target_link_libraries(test_sum_samples PRIVATE peakdetect)
+add_test(NAME sum_samples COMMAND test_sum_samples)
