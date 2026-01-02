@@ -56,10 +56,8 @@ int main() {
     //     printf("index: %d\n", peaks[i] + 0);
     // }
 
-    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_DATA_POINTS, argsorted_peak_indices, MAX_DATA_POINTS, 100);
-    // for (int i = 0; i < MAX_DATA_POINTS; i++) {
-    //     if (argsorted_peak_indices[i] == 0) continue;
-    //     //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
-    //     printf("argsorted index: %d\n", argsorted_peak_indices[i] + 0);
-    // }
+    argsort(data, peaks, 1283, argsorted_peak_indices);
+     for (int i = 0; i < 1283; i++) {
+         printf("%i: argsorted index: %d\n", i, argsorted_peak_indices[i] + 0);
+    }
 }

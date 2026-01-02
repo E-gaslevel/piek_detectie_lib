@@ -75,21 +75,21 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
 //     return 0;
 // }
 
-int argsort(const uint16_t data[], uint16_t peaks[], size_t data_size, uint16_t argsortArray[]) {
-    if (data_size == 0) {
+int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
+    if (peaks_size == 0) {
         return -1;
     }
 
-    for (size_t i = 0; i < data_size; i++) {
-        argsortArray[i] = i; // initialiseer index-array
+    for (size_t i = 0; i < peaks_size; i++) {
+        peaks_order[i] = i; // initialiseer index-array
     }
 
-    for (size_t i = 0; i < data_size-1; i++) {
-        for (size_t j = 0; j < data_size-i-1; j++) {
-            if (data[peaks[argsortArray[j]]] < data[peaks[argsortArray[j+1]]]) {
-                size_t tmp = argsortArray[j];
-                argsortArray[j] = argsortArray[j+1];
-                argsortArray[j+1] = tmp;
+    for (size_t i = 0; i < peaks_size-1; i++) {
+        for (size_t j = 0; j < peaks_size-i-1; j++) {
+            if (data[peaks[peaks_order[j]]] > data[peaks[peaks_order[j+1]]]) {
+                size_t tmp = peaks_order[j];
+                peaks_order[j] = peaks_order[j+1];
+                peaks_order[j+1] = tmp;
             }
         }
     }
@@ -104,7 +104,7 @@ int filter_distance(const uint16_t data[], size_t data_size,
     
     // Sorteer indices, hoog naar laag prio pieken
     // argsortArray bevat nu indices van de pieken array
-    argsort(data, peaks, data_size, argsortArray);
+    //argsort(data, peaks, data_size, argsortArray);
 
     // Loop over de gesoorterde indices, hoog van laag.
     // for(size_t i = 0; i < argsortArray_size; i++) {
