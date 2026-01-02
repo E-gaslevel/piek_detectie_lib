@@ -1,6 +1,4 @@
-#include "peakdetect.h"
-#include <stdio.h>
-static const uint16_t *g_data_for_qsort;
+#include "peakdetect.h" 
 
 int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
     // Check if peaks array is big enough
@@ -65,15 +63,6 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
-// static int compare_values(const void *a, const void *b, )
-// {
-//     uint16_t i = *(const uint16_t *)a;
-//     uint16_t j = *(const uint16_t *)b;
-
-//     if (g_data_for_qsort[i] < g_data_for_qsort[j]) return -1;
-//     if (g_data_for_qsort[i] > g_data_for_qsort[j]) return 1;
-//     return 0;
-// }
 
 int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
     if (peaks_size == 0) {
@@ -94,56 +83,5 @@ int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t
         }
     }
 
-    return 0;
-}
-
-int filter_distance(const uint16_t data[], size_t data_size, 
-                    uint16_t peaks[], size_t peaks_size, 
-                    uint16_t argsortArray[], size_t argsortArray_size, 
-                    size_t distance) {
-    
-    // Sorteer indices, hoog naar laag prio pieken
-    // argsortArray bevat nu indices van de pieken array
-    //argsort(data, peaks, data_size, argsortArray);
-
-    // Loop over de gesoorterde indices, hoog van laag.
-    // for(size_t i = 0; i < argsortArray_size; i++) {
-    //     printf("Signal value: %d, index %d\n", peaks[argsortArray[i]], i);
-    // }
-
-for (size_t i = 0; i < argsortArray_size; i++) {
-    size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
-    uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
-    printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
-}
-
-    // argsortArray[i] geeft indices van peaks[] van laag naar hoog prio
-    // peaks[argsortArray[i]] geeft indices waar de pieken zich bevinden in data[], van laag naar hoog prio
-    //     size_t current_peak = peaks[argsortArray[i]]
-    //     size_t peak_to_keep = peaks[argsortArray[i]];
-    //     printf("peak to keep: %d", peak_to_keep);
-    //     // Initialiseer grenzen waar de pieken verwijderd worden
-    //     // en check of deze niet buiten data[] vallen, zo ja, verander limiet
-    //     size_t limit_min, limit_max;
-    //     limit_min = distance;
-    //     limit_max = distance;
-    //     if(peak_to_keep - distance < 0) limit_min = peak_to_keep - 1;
-    //     if(peak_to_keep + distance > data_size) limit_max = data_size - peak_to_keep;
-
-    //     printf("\t Limit min : %d, limit max: %d\n", limit_min, limit_max);
-
-    //     // Remove all peaks from peaks[] within distance
-    //     for(size_t j = 0; j < peaks_size - 1; j++) {
-    //         if(peak_to_keep + limit_max == peaks[j] || peak_to_keep - limit_min == peaks[j]) {
-    //             peaks[j] = 0;
-    //         } 
-    //         //peaks[peak_to_keep + j];
-    //     }
-    // }
-    // defrag_peaks(peaks, peaks_size);
-    // printf("New peaks are: ");
-    // for (int i = 0; i < peaks_size; i++) {
-    //     printf("index: %d\n", peaks[i] + 0);
-    // }
     return 0;
 }
