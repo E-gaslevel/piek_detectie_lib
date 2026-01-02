@@ -1,6 +1,4 @@
-#include "peakdetect.h"
-
-static const uint16_t *g_data_for_qsort;
+#include "peakdetect.h" 
 
 int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
     // Check if peaks array is big enough
@@ -65,35 +63,25 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
-static int cmp_idx(const void *a, const void *b)
-{
-    uint16_t i = *(const uint16_t *)a;
-    uint16_t j = *(const uint16_t *)b;
 
-    if (g_data_for_qsort[i] < g_data_for_qsort[j]) return -1;
-    if (g_data_for_qsort[i] > g_data_for_qsort[j]) return 1;
-    return 0;
-}
-
-int argsort(const uint16_t data[], size_t data_size, uint16_t argsortArray[], size_t argsortArray_size) {
-    if (data_size == 0 || argsortArray_size == 0) {
+int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
+    if (peaks_size == 0) {
         return -1;
     }
 
-    if (argsortArray_size > data_size) {
-        argsortArray_size = data_size; // beperk argsortArray_size tot data_size
+    for (size_t i = 0; i < peaks_size; i++) {
+        peaks_order[i] = i; // initialiseer index-array
     }
 
-    for (size_t i = 0; i < argsortArray_size; i++) {
-        argsortArray[i] = (uint16_t)i; // initialiseer index-array
+    for (size_t i = 0; i < peaks_size-1; i++) {
+        for (size_t j = 0; j < peaks_size-i-1; j++) {
+            if (data[peaks[peaks_order[j]]] > data[peaks[peaks_order[j+1]]]) {
+                size_t tmp = peaks_order[j];
+                peaks_order[j] = peaks_order[j+1];
+                peaks_order[j+1] = tmp;
+            }
+        }
     }
 
-    g_data_for_qsort = data; // globale pointer voor comparator
-
-    qsort(argsortArray, argsortArray_size, sizeof(uint16_t), cmp_idx); // sorteer indices op basis van data[]
-    return 0;
-}
-
-int filter_distance(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, size_t distance) {
     return 0;
 }

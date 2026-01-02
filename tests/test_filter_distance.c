@@ -4,14 +4,15 @@
 #include <stdlib.h>
 
 #define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
-#define PEAKS_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices.txt"
-#define DISTANCE_FILTERED_PEAKS_FILE_PATH "../../tests/readings/peaks/50khz50perc1p1_indices_distance_filtered.txt"
+#define PEAKS_FILE_PATH "../../tests/readings/indices/50khz50perc1p1_indices.txt"
+#define DISTANCE_FILTERED_PEAKS_FILE_PATH "../../tests/readings/indices/50khz50perc1p1_indices_distance_filtered.txt"
 
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
 uint16_t data[MAX_DATA_POINTS];
 uint16_t peaks[MAX_PEAKS];
+uint16_t sorted_peaks[MAX_PEAKS];
 uint16_t expected_distance_filtered_peaks[MAX_PEAKS];
 
 int main() {
@@ -44,8 +45,6 @@ int main() {
         }
     }
     fclose(exp_rptr);
-
-    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, 100);
 
     for (size_t i = 0; i < MAX_PEAKS; i++) {
         if (peaks[i] != 0) {
