@@ -46,7 +46,7 @@ int main() {
     }
     fclose(exp_rptr);
 
-    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, sorted_peaks, MAX_PEAKS, 100);
+    //filter_distance(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, sorted_peaks, MAX_PEAKS, 100);
 
     for (size_t i = 0; i < MAX_PEAKS; i++) {
         if (peaks[i] != 0) {

@@ -99,24 +99,48 @@ int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t
 
 int filter_distance(const uint16_t data[], size_t data_size, 
                     uint16_t peaks[], size_t peaks_size, 
-                    uint16_t argsortArray[], size_t argsortArray_size, 
+                    uint16_t argsortArray[], 
                     size_t distance) {
     
     // Sorteer indices, hoog naar laag prio pieken
     // argsortArray bevat nu indices van de pieken array
-    //argsort(data, peaks, data_size, argsortArray);
+    argsort(data, peaks, peaks_size, argsortArray);
 
-    // Loop over de gesoorterde indices, hoog van laag.
-    // for(size_t i = 0; i < argsortArray_size; i++) {
-    //     printf("Signal value: %d, index %d\n", peaks[argsortArray[i]], i);
+for (size_t i = peaks_size-1; i >= 0; i--) {
+    // size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
+    // uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
+    // printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
+    // Dit is de hoogte van huidige, check of er nog andere zijn met andere waarde
+    uint16_t first_highest = i;
+    uint16_t second_highest;
+    // printf("%u\n", first_highest);
+    // printf("%u\n", peaks[first_highest]);
+    // printf("%u\n", data[peaks[first_highest]]);
+    for (size_t j = first_highest-1; j >= 0; j--) {
+        // Blijf zoeken totdat waardes niet gelijk zijn(j moet lager worden want loop hoog naar laag)
+        if (data[peaks[argsortArray[j]]] != data[peaks[argsortArray[first_highest]]]) {
+            // Als gevonden, pak vorige index(laatste gelijke piek)
+            second_highest =  j+1;
+            printf("First_highest: %u, index: %u, second_highest: %u, index: %u\n",
+                 data[peaks[argsortArray[first_highest]]], peaks[argsortArray[first_highest]],
+                  data[peaks[argsortArray[second_highest]]], peaks[argsortArray[second_highest]]);
+            break;
+        }
+    }
+    // Nu zijn dezelfde hoogte pieken bekend, welke kiezen?
+    // 0: left, 1: middle, 2: right
+    // switch (keep_side) {
+    //     case 0:
+    //         for(size_t k = first_highest; k < second_highest; )
+    //         break;
+    //     case 1:
+    //         break;
+    //     case 2:
+    //         break;
+    //     default:
+
     // }
-
-for (size_t i = 0; i < argsortArray_size; i++) {
-    size_t peak_idx = peaks[argsortArray[i]];  // index in data[]
-    uint16_t peak_value = data[peak_idx];      // signaalwaarde van die piek
-    printf("Peak value: %d at signal index %zu\n", peak_value, peak_idx);
 }
-
     // argsortArray[i] geeft indices van peaks[] van laag naar hoog prio
     // peaks[argsortArray[i]] geeft indices waar de pieken zich bevinden in data[], van laag naar hoog prio
     //     size_t current_peak = peaks[argsortArray[i]]

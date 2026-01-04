@@ -10,9 +10,11 @@
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
+#define N_OF_PEAKS 1283
+
 uint16_t data[MAX_DATA_POINTS];
-uint16_t peaks[MAX_DATA_POINTS];
-uint16_t argsorted_peak_indices[MAX_DATA_POINTS];
+uint16_t peaks[N_OF_PEAKS];
+uint16_t argsorted_peak_indices[N_OF_PEAKS];
 
 int main() {
     // Load reading from file into array
@@ -56,8 +58,5 @@ int main() {
     //     printf("index: %d\n", peaks[i] + 0);
     // }
 
-    argsort(data, peaks, 1283, argsorted_peak_indices);
-     for (int i = 0; i < 1283; i++) {
-         printf("%i: argsorted index: %d\n", i, argsorted_peak_indices[i] + 0);
-    }
+    filter_distance(data, MAX_PEAKS, peaks, N_OF_PEAKS, argsorted_peak_indices, 100);
 }
