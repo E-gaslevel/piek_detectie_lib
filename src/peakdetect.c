@@ -1,6 +1,6 @@
 #include "peakdetect.h"
 
-int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
+int local_maxima(const uint32_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
     // Check if peaks array is big enough
     if (peaks_size < data_size / 2) return -1;
 
@@ -50,7 +50,7 @@ int defrag_peaks(uint16_t peaks[], size_t peaks_size) {
     return 0;
 }
 
-int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, uint16_t height) {
+int filter_height(const uint32_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size, uint16_t height) {
     size_t i_max = peaks_size - 1;
     while (peaks[i_max] == 0 && i_max != 0) i_max--;
 
@@ -63,7 +63,7 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
-int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
+int argsort(const uint32_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
     if (peaks_size == 0) {
         return -1;
     }
@@ -85,7 +85,7 @@ int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t
     return 0;
 }
 
-int filter_distance(const uint16_t data[], size_t data_size, 
+int filter_distance(const uint32_t data[], size_t data_size, 
                     uint16_t peaks[], size_t peaks_size, 
                     uint16_t argsortArray[], 
                     size_t distance) {

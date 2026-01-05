@@ -10,7 +10,7 @@
 #define MAX_DATA_POINTS 5000
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 
-uint16_t data[MAX_DATA_POINTS];
+uint32_t data[MAX_DATA_POINTS];
 uint16_t peaks[MAX_PEAKS];
 uint16_t expected_peak_indices[MAX_PEAKS];
 

@@ -12,7 +12,7 @@
 #define MAX_PEAKS (MAX_DATA_POINTS / 2)
 #define N_OF_PEAKS 1283
 
-uint16_t data[MAX_DATA_POINTS];
+uint32_t data[MAX_DATA_POINTS];
 uint16_t peaks[N_OF_PEAKS];
 uint16_t argsorted_peaks[N_OF_PEAKS];
 uint16_t expected_distance_filtered_peaks[N_OF_PEAKS];

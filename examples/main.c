@@ -3,11 +3,18 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define READING_FILE_PATH "../../tests/readings/50khz50perc1p1.txt"
-#define SAVGOL_FILTER_FILE_PATH "../../tests/readings/expected_savgol_filter.txt"
+#define SAMPLE_FILE_PATH_1 "../../tests/readings/beste_pulsen/fles5/26.9_f120000d75n5_0.txt"
+#define SAMPLE_FILE_PATH_2 "../../tests/readings/beste_pulsen/fles5/26.9_f120000d75n5_0 (2).txt"
+#define SAMPLE_FILE_PATH_3 "../../tests/readings/beste_pulsen/fles5/26.9_f120000d75n5_0 (3).txt"
+#define SAMPLE_FILE_PATH_4 "../../tests/readings/beste_pulsen/fles5/26.9_f120000d75n5_0 (4).txt"
+#define SAMPLE_FILE_PATH_5 "../../tests/readings/beste_pulsen/fles5/26.9_f120000d75n5_0 (5).txt"
 
-#define MAX_DATA_POINTS 5000
+#define MAX_DATA_POINTS 4500
 #define WINDOW 51
+#define MAX_PEAKS (MAX_DATA_POINTS/2)
+
+#define min_height 12000
+#define min_distance 92
 
 double coeffs[WINDOW] = {
     -0.026637069922305495,
@@ -63,46 +70,68 @@ double coeffs[WINDOW] = {
     -0.026637069922305457
 };
 
-int32_t data[MAX_DATA_POINTS];
-int32_t expected_filtered_data[MAX_DATA_POINTS];
+uint16_t current_sample[MAX_DATA_POINTS];
+uint32_t data[MAX_DATA_POINTS];
+
+uint16_t peaks[MAX_PEAKS];
+uint16_t argsorted_peaks[MAX_PEAKS];
 
 int main() {
-    // Load reading from file into array
-    size_t file_index = 0;
-    FILE *rptr = fopen(READING_FILE_PATH, "r");
-    if (rptr == NULL) {
-        perror("Failed to open readings file");
-        return 1;
-    }
-    char line[8];
-    while (fgets(line, sizeof(line), rptr) != NULL) {
-        if (file_index < MAX_DATA_POINTS) {
-            data[file_index++] = (int32_t)atoi(line);
-        }
-    }
-    fclose(rptr);
 
-    // Load filtered data from file into array
-    file_index = 0;
-    FILE *fptr = fopen(SAVGOL_FILTER_FILE_PATH, "r");
-    if (fptr == NULL) {
-        perror("Failed to open peaks indices file");
-        return 1;
+    // Initialiseer alle array elementen met waarde: 0
+    for(size_t i = 0; i < MAX_DATA_POINTS; i++) {
+        data[i] = 0;
     }
-    char exp_line[8];
-    while (fgets(exp_line, sizeof(exp_line), fptr) != NULL) {
-        if (file_index < MAX_DATA_POINTS) {
-            expected_filtered_data[file_index++] = (float)atoi(exp_line);
+
+    // Load reading from file into array
+    size_t file_index;
+    FILE *rptr;
+
+    for(size_t i = 0; i < 5; i++) {
+        file_index = 0;
+        switch(i) {
+            case 0: 
+                rptr = fopen(SAMPLE_FILE_PATH_1, "r");
+                break;
+            case 1: 
+                rptr = fopen(SAMPLE_FILE_PATH_2, "r");
+                break;
+            case 2: 
+                rptr = fopen(SAMPLE_FILE_PATH_3, "r");
+                break;
+            case 3: 
+                rptr = fopen(SAMPLE_FILE_PATH_4, "r");
+                break;
+            case 4: 
+                rptr = fopen(SAMPLE_FILE_PATH_5, "r");
+                break;
+            default:
+                break;
         }
+        if (rptr == NULL) {
+            perror("Failed to open readings file");
+            return 1;
+        }
+        char line[8];
+        while (fgets(line, sizeof(line), rptr) != NULL) {
+            if (file_index < MAX_DATA_POINTS) {
+                current_sample[file_index++] = (uint16_t)atoi(line);
+            }
+        }
+        fclose(rptr);
+        sum_samples(data, MAX_DATA_POINTS, current_sample, MAX_DATA_POINTS);
     }
-    fclose(fptr);
 
     smooth_signal(data, MAX_DATA_POINTS, coeffs, WINDOW);
+    local_maxima(data, MAX_DATA_POINTS, peaks, MAX_PEAKS);
+    filter_height(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, min_height);
+    filter_distance(data, MAX_DATA_POINTS, peaks, MAX_PEAKS, argsorted_peaks, min_distance);
 
     // Print both arrays
-    for (int i = 0; i < MAX_DATA_POINTS; i++) {
+    for (int i = 0; i < MAX_PEAKS; i++) {
+        if (peaks[i] == 0) continue;
         //assert(argsorted_indices[i] == expected_argsorted_indices[i]);
-        printf("index: %d: Calculated: %d vs imported: %d\n", i, data[i], expected_filtered_data[i]);
+        printf("index: %d, peak: %d\n", peaks[i], data[peaks[i]]);
     }
 
 }
