@@ -141,3 +141,20 @@ int sum_samples(uint32_t sum[], size_t sum_size, uint16_t current_sample[], size
 
     return 0;
 }
+
+void smooth_signal(int *x, int n, const double *c, int window){
+    
+    int M = window / 2;
+    int i, k;
+    double y;
+
+    for (i = M; i < n - M; i++) {
+        y = 0.0;
+
+        for (k = -M; k <= M; k++) {
+            y += c[k + M] * x[i + k];
+        }
+
+        x[i] = y;
+    }
+}
