@@ -128,3 +128,16 @@ int filter_distance(const uint16_t data[], size_t data_size,
     
     return 0;
 }
+
+int sum_samples(uint32_t sum[], size_t sum_size, uint16_t current_sample[], size_t current_sample_size) {
+
+    if (current_sample_size > sum_size) {
+        current_sample_size = sum_size;
+    }
+
+    for(size_t i = 0; i < sum_size; i++) {
+        sum[i] += current_sample[i];
+    }
+
+    return 0;
+}
