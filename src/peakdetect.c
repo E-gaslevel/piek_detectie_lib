@@ -1,4 +1,4 @@
-#include "peakdetect.h" 
+#include "peakdetect.h"
 
 int local_maxima(const uint16_t data[], size_t data_size, uint16_t peaks[], size_t peaks_size) {
     // Check if peaks array is big enough
@@ -63,7 +63,6 @@ int filter_height(const uint16_t data[], size_t data_size, uint16_t peaks[], siz
     return defrag_peaks(peaks, peaks_size);
 }
 
-
 int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t peaks_order[]) {
     if (peaks_size == 0) {
         return -1;
@@ -83,5 +82,49 @@ int argsort(const uint16_t data[], uint16_t peaks[], size_t peaks_size, uint16_t
         }
     }
 
+    return 0;
+}
+
+int filter_distance(const uint16_t data[], size_t data_size, 
+                    uint16_t peaks[], size_t peaks_size, 
+                    uint16_t argsortArray[], 
+                    size_t distance) {
+
+    if(data_size == 0 || peaks_size == 0) {
+        return -1;
+    }
+
+    size_t peak_to_keep_index;
+    int16_t diff;
+
+    for(int16_t i = peaks_size-1; i >= 0; i--) {
+        size_t peak_to_keep_index = argsortArray[i];
+        // Als deze al verwijderd is, dan ga naar volgende index
+        if(peaks[peak_to_keep_index] == 0) continue;
+
+        // Check rechts van peak_to_keep alleen binnen de distance
+        for(size_t j = peak_to_keep_index; j < peaks_size; j++) {
+            if (peaks[j] == 0) continue;
+            diff = (int16_t)peaks[j] - (int16_t)peaks[peak_to_keep_index];
+
+            if(diff == 0) continue;
+            if (diff > distance) break;
+            peaks[j] = 0;
+        }
+
+        // Check links van peak_to_keep alleen binnen de distance
+        for (size_t j = peak_to_keep_index; j-- > 0;) {
+            if (peaks[j] == 0) continue;
+
+            diff = (int16_t)peaks[peak_to_keep_index] - (int16_t)peaks[j];
+
+            if(diff == 0) continue;
+            if (diff > distance) break;
+            peaks[j] = 0;
+        }
+    } 
+    
+    defrag_peaks(peaks, peaks_size);
+    
     return 0;
 }
