@@ -94,18 +94,33 @@ int filter_distance(const uint16_t data[], size_t data_size,
         return -1;
     }
 
-    uint16_t peak_to_keep_index;
+    size_t peak_to_keep_index;
+    int16_t diff;
+
     for(int16_t i = peaks_size-1; i >= 0; i--) {
-        peak_to_keep_index = argsortArray[i];
+        size_t peak_to_keep_index = argsortArray[i];
         // Als deze al verwijderd is, dan ga naar volgende index
         if(peaks[peak_to_keep_index] == 0) continue;
-        for(int16_t j = 0; j < peaks_size; j++) {
+
+        // Check rechts van peak_to_keep alleen binnen de distance
+        for(size_t j = peak_to_keep_index; j < peaks_size; j++) {
             if (peaks[j] == 0) continue;
-            int16_t diff = (int16_t)peaks[peak_to_keep_index] - (int16_t)peaks[j];
+            diff = (int16_t)peaks[j] - (int16_t)peaks[peak_to_keep_index];
+
             if(diff == 0) continue;
-            if(abs(diff) < distance) {
-                peaks[j] = 0; 
-            }    
+            if (diff > distance) break;
+            peaks[j] = 0;
+        }
+
+        // Check links van peak_to_keep alleen binnen de distance
+        for (size_t j = peak_to_keep_index; j-- > 0;) {
+            if (peaks[j] == 0) continue;
+
+            diff = (int16_t)peaks[peak_to_keep_index] - (int16_t)peaks[j];
+
+            if(diff == 0) continue;
+            if (diff > distance) break;
+            peaks[j] = 0;
         }
     } 
     
